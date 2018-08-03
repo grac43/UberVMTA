@@ -1,4 +1,4 @@
-Final project psedocode
+Final project psedocode to use for final project
 
 -   Connect to Google Direction’s API
 -   Connect to Uber’s API
