@@ -1,0 +1,31 @@
+#Travel Times Function using Google API
+import googlemaps
+import geocoder 
+from datetime import datetime
+from datetime import timedelta
+from pytimeparse.timeparse import timeparse
+
+gmaps = googlemaps.Client(key='AIzaSyD1zTwme37sTYJy2y5gBzOg9TluuK2xgcc')
+
+
+def get_travel_time():
+    now = datetime.now() #gets current time
+    current = str(input("Where are you now? ")) + ', NY'
+    destination = str(input("Where do you want to go? ")) + ', NY'
+
+    #create a dictionary to store values of different travel tmies
+    travel_times_int = {'driving' : 0,
+                    'transit' : 0,
+                    'bicycling' : 0,
+                    'walking': 0,
+                    }
+
+    #Run for loop to cycle through google API to get travel time for different modes of transport
+    for mode in ['transit', 'driving', 'walking', 'bicycling']:
+        directions_result = gmaps.directions(current,
+                                         destination,
+                                         mode,
+                                         departure_time=now)
+        travel_times_int[mode] = directions_result[0]['legs'][0]['duration']['value']
+
+    return travel_times_int
