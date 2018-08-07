@@ -1,20 +1,18 @@
-#File that has all the functions I've used so far 
-
 #File containing all the functions our program uses
 import googlemaps
 import geocoder 
 from datetime import datetime
 from datetime import timedelta
 from pytimeparse.timeparse import timeparse
+from urllib.request import urlopen
+import json
+import time
+from math import cos, asin, sqrt
 
 gmaps = googlemaps.Client(key='AIzaSyD1zTwme37sTYJy2y5gBzOg9TluuK2xgcc')
 
-##FUNCTION 1
-def get_travel_time(): #function to get the travel time between destinations
-    now = datetime.now() #gets current time
-    current = str(input("Where are you now? ")) + ', NY'
-    destination = str(input("Where do you want to go? ")) + ', NY'
-
+#FUNCTION 1
+def get_travel_time(now, current, destination): #function to get the travel time between destinations
     #create a dictionary to store values of different travel tmies
     travel_times_int = {'driving' : 0,
                     'transit' : 0,
@@ -63,7 +61,7 @@ def print_time(time): #function to show a time in a readable way
 
     else:
         time = time[0] + " hrs and " + time[1]  + " minutes"
-    return time #returns a string with the time 
+    return time
 
 #FUNCTION 4
 def are_you_late(arrival_time, correct_arrival_time): #function to say whether you will be on-time
@@ -89,3 +87,25 @@ def send_excuse(phone_number, excuse): #function that uses Twilio to send a text
                                      body=excuse) 
 
     print("Your excuse was sent! Now hurry!")
+
+#FUNCTION 6
+def get_coord_dist(lat1, lon1, lat2, lon2):
+    p = 0.017453292519943295
+    a = 0.5 - cos((lat2-lat1)*p)/2 + cos(lat1*p)*cos(lat2*p) * (1-cos((lon2-lon1)*p)) / 2
+    return 12742 * asin(sqrt(a))
+
+#FUNCTION 7
+def find_closest_station(current_lat,current_lng):
+    citibikenycJson = json.loads(urlopen('http://www.citibikenyc.com/stations/json').read())
+    stations_dict_list = citibikenycJson['stationBeanList']
+
+    for station in stations_dict_list:
+        lat = station['latitude']
+        lng = station['longitude']
+        dist_to_station = get_coord_dist(current_lat, current_lng, lat, lng)
+        station.update({'dist_to_me' : dist_to_station})
+        #print(dist_to_station)
+
+    closest_station = min(stations_dict_list, key=lambda x:x['dist_to_me'])
+    return closest_station
+    print(closest_station)
