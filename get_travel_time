@@ -29,3 +29,44 @@ def get_travel_time():
         travel_times_int[mode] = directions_result[0]['legs'][0]['duration']['value']
 
     return travel_times_int
+
+
+
+
+### DGraca coding for citi bike integration
+
+#import the citi bike api: http://appservices.citibikenyc.com/v1/station/list
+#use current address and find closest citi bike station with >1 citi bike available in the dock by using lat and long of both current and all citi bike stations
+use destination to find closest citi bike dock with greater than 1 dock
+
+revise bicycling time to reflect the following
+1-walk to dock, 2-ride bike to destination dock, 3- walk from destination dock to destionation
+
+
+# first we need to pull the citi bike data from the internet. the file is a json file and a http link.
+
+import urllib.request
+
+
+import urllib2
+import json
+req = urllib2.Request("https://feeds.citibikenyc.com/stations/stations.json")
+opener = urllib2.build_opener()
+f = opener.open(req)
+json = json.loads(f.read())
+print json
+print json['unit']
+
+# Array example
+
+import urllib2
+import json
+req = urllib2.Request("http://vimeo.com/api/v2/video/38356.json")
+opener = urllib2.build_opener()
+f = opener.open(req)
+json = json.loads(f.read())
+print json
+print json[0]['title']
+
+
+
