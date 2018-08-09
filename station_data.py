@@ -11,7 +11,7 @@ r.json()
 
 citibike_data = r.json()
 
-
+citibike_data['stationBeanList'][1]
 info = []
 
 for station in citibike_data['stationBeanList']:
