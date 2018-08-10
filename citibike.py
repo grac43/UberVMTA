@@ -2,9 +2,6 @@ import googlemaps
 import requests
 from operator import itemgetter, attrgetter
 
-
-
-
 def get_closest_station_idx(origin, destinations, bucket_sz = 100):
   """
   :param origin
@@ -39,18 +36,16 @@ def get_closest_station_idx(origin, destinations, bucket_sz = 100):
   sorted_durations = sorted(durations, key=itemgetter(0)) #sorts smallest to larget based on the "first collumn" which is the duration in seconds
   return sorted_durations[0][1] #pulls out the closest citbike station index
 
-
-if __name__ == "__main__":
-
+def get_closest_station(location):
   # set inputs
-  cur_latlng = (40.753460, -73.980737) #Parijat--need your help connecting this to your program
+  cur_latlng = location #Parijat--need your help connecting this to your program
   url = "https://feeds.citibikenyc.com/stations/stations.json"
+  # get info from URL
+  r = requests.get(url)
 
   # api
   gmaps = googlemaps.Client(key='AIzaSyD1zTwme37sTYJy2y5gBzOg9TluuK2xgcc') #Parijat this is your private key
 
-  # get info from URL
-  r = requests.get(url)
   stations = r.json()['stationBeanList']
   latlngs = []
   #pull from json file a list of all the lat and longs for each citibike station
@@ -63,10 +58,5 @@ if __name__ == "__main__":
 
   closest_station_idx = get_closest_station_idx(cur_latlng, latlngs)
   closest = stations[closest_station_idx]
-  print (f"The nearest CitiBike Station is on {closest['stAddress1']} \nTotal Open Docks(s):{closest['availableDocks']} \nTotal Available Bike(s): {closest['availableBikes']}")
-
-
-  dest_latlng = (40.815041, -73.959868)
-  dest_station_idx = get_closest_station_idx(dest_latlng, latlngs)
-  closest_dest = stations[dest_station_idx]
-  print (f"The nearest CitiBike Station to destination is on {closest_dest['stAddress1']} \nTotal Open Docks(s):{closest_dest['availableDocks']} \nTotal Available Bike(s): {closest_dest['availableBikes']}")
+  return closest
+  # print (f"The nearest CitiBike Station is on {closest['stAddress1']} \nTotal Open Docks(s):{closest['availableDocks']} \nTotal Available Bike(s): {closest['availableBikes']}")

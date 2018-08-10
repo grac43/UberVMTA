@@ -2,6 +2,7 @@ import googlemaps
 import geocoder 
 from datetime import datetime
 from datetime import timedelta
+import citibike
 
 #from pytimeparse.timeparse import timeparse - I don't think I need this. Will delete. 
 
@@ -9,7 +10,6 @@ from datetime import timedelta
 from travel_functions import get_travel_time, find_transit_mode, are_you_late, print_time, send_excuse
 #ADD THE IMPORTS FOR THE CITIBIKE FUNCTIONS FROM THEIR FILES
 
-gmaps = googlemaps.Client(key='AIzaSyD1zTwme37sTYJy2y5gBzOg9TluuK2xgcc')
 now = datetime.now() #gets current time
 
 current = str(input("Where are you now? ")) + ', NY'
@@ -35,6 +35,12 @@ user_mode = find_transit_mode() #run function to find out what travel method use
 arrival_time = now + timedelta(seconds = travel_times[user_mode])
 
 ####ADD SOME CITIBIKE CODE HERE TO SHOW THE CITBIKE INFO AT YOUR CURRENT & DESTINATION####
+
+
+# dan's code current latlng
+closest_origin = citibike.get_closest_station((current_lat, current_lng))
+# dan's code destination latlng
+closest_dest   = citibike.get_closest_station((dest_lat, dest_lng))
 
 correct_arrival_time = datetime.strptime(input("When were you supposed to arrive? Enter hh:mm am/pm "), '%I:%M%p')
 correct_arrival_time = correct_arrival_time.replace(year=now.year, month = now.month, day = now.day)
