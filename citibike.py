@@ -13,12 +13,16 @@ def get_closest_station_idx(origin, destinations, bucket_sz = 100):
   """
   results = []
   bucket_sz = 100
+  # api
+  gmaps = googlemaps.Client(key='AIzaSyD1zTwme37sTYJy2y5gBzOg9TluuK2xgcc') #Parijat this is your private key
+
 
   #for buckket of lat longs, the program will run an iteration to figure out the total walking time in seconds from current location to citibike terminal
   for idx in range(0, len(destinations), bucket_sz):
-    latlng_bucket = latlngs[idx: idx + bucket_sz];
+    latlng_bucket = destinations[idx: idx + bucket_sz];
     results_bucket = gmaps.distance_matrix(origins = origin, destinations = latlng_bucket, mode = "walking")
     results.extend(results_bucket['rows'][0]['elements'])
+
 
   length = len(results) #the total length of our citibike list
   durations = [] #empty list that will be appended as we run the code
@@ -43,8 +47,6 @@ def get_closest_station(location):
   # get info from URL
   r = requests.get(url)
 
-  # api
-  gmaps = googlemaps.Client(key='AIzaSyD1zTwme37sTYJy2y5gBzOg9TluuK2xgcc') #Parijat this is your private key
 
   stations = r.json()['stationBeanList']
   latlngs = []

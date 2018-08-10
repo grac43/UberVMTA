@@ -37,10 +37,17 @@ arrival_time = now + timedelta(seconds = travel_times[user_mode])
 ####ADD SOME CITIBIKE CODE HERE TO SHOW THE CITBIKE INFO AT YOUR CURRENT & DESTINATION####
 
 
+print(f"({current_lat}, {current_lng}), ({dest_lat}, {dest_lng})")
+
 # dan's code current latlng
 closest_origin = citibike.get_closest_station((current_lat, current_lng))
+closest = closest_origin
+print (f"The nearest CitiBike Station is on {closest['stAddress1']} \nTotal Open Docks(s):{closest['availableDocks']} \nTotal Available Bike(s): {closest['availableBikes']}")
+
 # dan's code destination latlng
 closest_dest   = citibike.get_closest_station((dest_lat, dest_lng))
+closest = closest_dest
+print (f"The nearest CitiBike Station is on {closest['stAddress1']} \nTotal Open Docks(s):{closest['availableDocks']} \nTotal Available Bike(s): {closest['availableBikes']}")
 
 correct_arrival_time = datetime.strptime(input("When were you supposed to arrive? Enter hh:mm am/pm "), '%I:%M%p')
 correct_arrival_time = correct_arrival_time.replace(year=now.year, month = now.month, day = now.day)
