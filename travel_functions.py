@@ -32,7 +32,7 @@ def get_travel_time(now, current, destination): #function to get the travel time
 
 #FUNCTION 2
 def find_transit_mode(): #function that asks user for their mode of transport
-    user_input_mode = input("How are you getting there? subway, car, walking, or bike? ")
+    user_input_mode = input("How are you getting there? Options: subway, car, walking, or bike\n")
 
     if user_input_mode == "subway" or user_input_mode == 'train': 
         mode = "transit"

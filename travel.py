@@ -3,6 +3,10 @@ import geocoder
 from datetime import datetime
 from datetime import timedelta
 import citibike
+from geopy.geocoders import Nominatim
+
+
+
 
 #from pytimeparse.timeparse import timeparse - I don't think I need this. Will delete. 
 
@@ -12,13 +16,18 @@ from travel_functions import get_travel_time, find_transit_mode, are_you_late, p
 
 now = datetime.now() #gets current time
 
-current = str(input("Where are you now? ")) + ', NY'
-destination = str(input("Where do you want to go? ")) + ', NY'
+current = str(input("Where are you now?\nFormat Example: 293 central park west, ny, ny, 100024\n")) + ''
+destination = str(input("Where do you want to go?\nFormat Example: 293 central park west, ny, ny, 100024\n")) + ''
+geolocator = Nominatim(user_agent="find me")
+geocode_current = geolocator.geocode(current)
+geocode_destination = geolocator.geocode(destination)
 
-current_lat = geocoder.google(current).lat
-current_lng = geocoder.google(current).lng
-dest_lat = geocoder.google(destination).lat
-dest_lng = geocoder.google(destination).lng
+
+current_lat = geocode_current.latitude
+current_lng = geocode_current.longitude
+dest_lat = geocode_destination.latitude
+dest_lng = geocode_destination.longitude
+
 
 print("Ok, I will find out how long it will take you to get there!")
 
@@ -34,22 +43,20 @@ print(f"{min[0]} is fastest.")
 user_mode = find_transit_mode() #run function to find out what travel method user is using
 arrival_time = now + timedelta(seconds = travel_times[user_mode])
 
-####ADD SOME CITIBIKE CODE HERE TO SHOW THE CITBIKE INFO AT YOUR CURRENT & DESTINATION####
 
-
-print(f"({current_lat}, {current_lng}), ({dest_lat}, {dest_lng})")
+# print(f"({current_lat}, {current_lng}), ({dest_lat}, {dest_lng})")
 
 # dan's code current latlng
 closest_origin = citibike.get_closest_station((current_lat, current_lng))
 closest = closest_origin
-print (f"The nearest CitiBike Station is on {closest['stAddress1']} \nTotal Open Docks(s):{closest['availableDocks']} \nTotal Available Bike(s): {closest['availableBikes']}")
+print (f"The nearest CitiBike Station based on your current location is on {closest['stAddress1']} \nTotal Open Docks(s):{closest['availableDocks']} \nTotal Available Bike(s): {closest['availableBikes']}\n")
 
 # dan's code destination latlng
 closest_dest   = citibike.get_closest_station((dest_lat, dest_lng))
 closest = closest_dest
-print (f"The nearest CitiBike Station is on {closest['stAddress1']} \nTotal Open Docks(s):{closest['availableDocks']} \nTotal Available Bike(s): {closest['availableBikes']}")
+print (f"The nearest CitiBike Station based on your destination is on {closest['stAddress1']} \nTotal Open Docks(s):{closest['availableDocks']} \nTotal Available Bike(s): {closest['availableBikes']}")
 
-correct_arrival_time = datetime.strptime(input("When were you supposed to arrive? Enter hh:mm am/pm "), '%I:%M%p')
+correct_arrival_time = datetime.strptime(input("When were you supposed to arrive? Enter the military time, with no spaces: "), '%H:%M')
 correct_arrival_time = correct_arrival_time.replace(year=now.year, month = now.month, day = now.day)
 
 late_time = are_you_late(arrival_time, correct_arrival_time) #run function to determine whether user is late
@@ -57,19 +64,21 @@ late_time = are_you_late(arrival_time, correct_arrival_time) #run function to de
 if arrival_time > correct_arrival_time: 
 #if clause to determine what to do if the user is late
 
-    if input("Do you want to send an excuse text? ").lower == "yes":
-    #if user is late, ask if they want you to text their friend, run another function to do so
-
-        phone_number = input("What is your friend' phone number? ")
-        if (user_mode == 'bicycling'): #A citibike specific excuse
-            excuse = "I'm so sorry I could not get a Citibike, I will be " + print_time(late_time)
+    if input("Do you want to send an excuse text? (input: yes/no):").lower =="yes":
+            
+        #if user is late, ask if they want you to text their friend, run another function to do so
+      
+            phone_number = input("What is your friend' phone number? ").lower
+            if (user_mode == 'bike'): 
+#A citibike specific excuse
+                excuse = "I'm so sorry I could not get a Citibike, I will be " + print_time(late_time)
         
-        else:
-            excuse = "I'm so sorry, I will be "
+            else:
+                excuse = "I'm so sorry, I will be "
 
-        excuse = excuse + print_time(late_time)
-        send_excuse(phone_number, excuse)
-else:
-    print("Being timely is a virtue, good job!")
-    exit()   
+# excuse = excuse + print_time(late_time)
+# send_excuse(phone_number, excuse)
+# else:
+# print("Being timely is a virtue, good job!")
+# exit()   
     #end function if user is on-time
