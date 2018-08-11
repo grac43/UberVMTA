@@ -64,11 +64,11 @@ late_time = are_you_late(arrival_time, correct_arrival_time) #run function to de
 if arrival_time > correct_arrival_time: 
 #if clause to determine what to do if the user is late
 
-    if input("Do you want to send an excuse text? (input: yes/no):").lower =="yes":
+    if input("Do you want to send an excuse text? (input: yes/no):").lower() =="yes":
             
         #if user is late, ask if they want you to text their friend, run another function to do so
       
-            phone_number = input("What is your friend' phone number? ").lower
+            phone_number = input("What is your friend' phone number? ").lower() 
             if (user_mode == 'bike'): 
 #A citibike specific excuse
                 excuse = "I'm so sorry I could not get a Citibike, I will be " + print_time(late_time)
@@ -76,9 +76,7 @@ if arrival_time > correct_arrival_time:
             else:
                 excuse = "I'm so sorry, I will be "
 
-# excuse = excuse + print_time(late_time)
-# send_excuse(phone_number, excuse)
-# else:
+excuse = excuse + print_time(late_time)
+send_excuse(phone_number, excuse)
+#     else:
 # print("Being timely is a virtue, good job!")
-# exit()   
-    #end function if user is on-time
